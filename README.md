@@ -29,8 +29,8 @@
    - cookie-parser
    - express-session
    - session-file-store
-   - 
-    
+
+         
 ### Configuración
 1. Clonar el repositorio:
    ```sh
