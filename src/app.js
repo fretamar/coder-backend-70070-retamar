@@ -8,7 +8,9 @@ import __dirname from './utils.js'
 import userRouter from './routes/users.router.js'
 import sessionRouter from './routes/sessions.js'
 import viewsRouter from './routes/views.js'
-import path from 'path'
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
+
 
 const app = express()
 const PORT = 8080
@@ -29,13 +31,17 @@ app.use(session({
     saveUninitialized: false
 }))
 
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.engine("handlebars", Handlebars.engine())
 app.set("views", "./src/views")
 app.set("view engine", "handlebars")
 
 
-app.use('/api/users', userRouter)
-app.use('/api/sessions', sessionRouter)
+app.use('/users', userRouter)
+app.use('/sessions', sessionRouter)
 app.use('/', viewsRouter)
 
 
