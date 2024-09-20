@@ -1,7 +1,7 @@
 <h2>Perfil de Usuario</h2>
-<p>Nombre: {{user.first_name}}</p>
-<p>Apellido: {{user.last_name}}</p>
-<p>Email: {{user.email}}</p>
+<p>Nombre: {{profile._json.first_name}}</p>
+<p>Apellido: {{profile._json.last_name}}</p>
+<p>Email: {{profile._json.email}}</p>
 <p>Edad: {{user.age}}</p>
 <form action="/sessions/logout" method="POST">
     <button type="submit">Cerrar Sesión</button>

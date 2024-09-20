@@ -2,6 +2,8 @@
 import { Router } from 'express'
 import { userModel } from '../models/user.model.js'
 import passport from 'passport'
+import { authorization, generateToken } from '../utils.js'
+import { passportCall } from '../utils.js'
 
 const sessionRouter = Router()
 
@@ -14,18 +16,18 @@ sessionRouter.get('/failregister', async (req,res)=>{
     res.send({error:"Error al registrar usuario"})
 })     
 
-sessionRouter.post('/login', passport.authenticate('login', {failureRedirect:'/faillogin'}), async (req, res) => {
-    
-    if (!req.user) return res.status(400).send({ status: "error", error: "Credenciales invalidas" })
-    
-        req.session.user = {
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            email: req.user.email,
-            age: req.user.age
-        }
-        res.redirect('/profile')
-  })
+sessionRouter.post('/login', (req,res) => {
+    const {email, password} = req.body
+    if(email == "fran@gmail.com" && password == "fran123"){
+        let token = jwt.sign({email, password, role: "user"}, "franSecret", {expiresIn: "24h"})
+        res.send({message: "Inicio de sesion exitoso", token})
+    }
+
+})
+
+sessionRouter.get('/current', passportCall('jwt'),authorization('user'),(req,res) =>{
+    res.send(req.user)
+})
 
 sessionRouter.get('/faillogin', (req,res) =>{
     res.send({error:"Login fallido"})
@@ -55,5 +57,12 @@ sessionRouter.post('/reset-password', async (req, res) => {
         res.status(500).send({ status: "error", error: "Error interno del servidor" })
     }
 })*/
+
+sessionRouter.get('/github', passport.authenticate('github',{scope:['user:email']}), async(req,res)=>{})
+
+sessionRouter.get('/githubcallback', passport.authenticate('github',{failureRedirect:'/login'}), async(req,res)=>{
+    req.session.user=req.user
+    res.redirect('/ ')
+})
 
 export default sessionRouter
